@@ -1,6 +1,7 @@
 package fr.simplon.oxosondages_service;
 
 import fr.simplon.oxosondages_service.entity.Sondage;
+import org.apiguardian.api.API;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +14,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+
 @SpringBootTest
 class OxoSondagesServiceApplicationTests {
 
-
+    /**
+     * Tests the display of all surveys.
+     */
 
     @Test
     public void testDisplayAllSurveys() {
@@ -36,29 +41,52 @@ class OxoSondagesServiceApplicationTests {
         Assertions.assertFalse(sondages.isEmpty());
     }
 
+    /**
+     * Tests the display of a specific survey.
+     */
+
     @Test
     public void testDisplaySurvey() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Sondage> request = new HttpEntity<>(headers);
-        ResponseEntity<Sondage> response = restTemplate.exchange(
+
+        // Création d'un sondage à partir de l'API REST
+        Sondage sondageCreate = new Sondage("test GetSurvey", "test GetSurvey", LocalDate.now(), LocalDate.now().plusDays(7), "test GetSurvey");
+        ResponseEntity<Sondage> responseCreate = restTemplate.postForEntity(
+                "http://localhost:8080/rest/sondages",
+                sondageCreate,
+                Sondage.class
+        );
+        assertEquals(HttpStatus.OK, responseCreate.getStatusCode());
+
+        // Récupération du sondage créé à partir de l'API REST
+        Sondage sondageGet = responseCreate.getBody();
+        assertNotNull(sondageGet);
+
+        ResponseEntity<Sondage> responseGet = restTemplate.exchange(
                 "http://localhost:8080/rest/sondages/{id}",
                 HttpMethod.GET,
-                request,
+                null,
                 Sondage.class,
-                2L);
-        Sondage sondage = response.getBody();
+                sondageGet.getId()
+        );
+
+        // Vérification des données du sondage récupéré
+        assertEquals(HttpStatus.OK, responseGet.getStatusCode());
+        Sondage sondage = responseGet.getBody();
         assertNotNull(sondage);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2L, response.getBody().getId());
-        assertEquals("Description", sondage.getDescription());
-        assertEquals("Question", sondage.getQuestion());
-        assertEquals("DateCreation", sondage.getDateCreation());
-        assertEquals("DateCloture", sondage.getDateCloture());
-        assertEquals("Createur", sondage.getCreateur());
+        assertEquals(sondageGet.getId(), sondage.getId());
+        assertEquals(sondageGet.getDescription(), sondage.getDescription());
+        assertEquals(sondageGet.getQuestion(), sondage.getQuestion());
+        assertEquals(sondageGet.getDateCreation(), sondage.getDateCreation());
+        assertEquals(sondageGet.getDateCloture(), sondage.getDateCloture());
+        assertEquals(sondageGet.getCreateur(), sondage.getCreateur());
     }
 
+    /**
+     * Tests the addition of a new survey.
+     */
     @Test
     public void testAddSurvey() {
         RestTemplate restTemplate = new RestTemplate();
@@ -80,6 +108,17 @@ class OxoSondagesServiceApplicationTests {
         assertEquals(sondage.getDateCloture(), response.getBody().getDateCloture());
         assertEquals(sondage.getCreateur(), response.getBody().getCreateur());
     }
+
+    /**
+
+     This method tests the update of a survey.
+
+     It creates a survey and then modifies the data of the survey.
+
+     The ID of the created survey is retrieved to modify it.
+
+     The test then verifies if the update was successful by comparing the updated survey data with the retrieved data.
+     */
 
     @Test
     public void testUpdateSurvey() {
@@ -126,6 +165,15 @@ class OxoSondagesServiceApplicationTests {
         assertEquals(sondage.getCreateur(), response.getBody().getCreateur());
     }
 
+
+    /**
+
+     This method tests the deletion of a survey.
+
+     It creates a survey and then deletes it.
+
+     The test then verifies if the deletion was successful by checking the HTTP status code of the response.
+     */
 
     @Test
     public void testDeleteSurvey() {
