@@ -35,9 +35,11 @@ Par ailleurs, une page "swagger-ui.html" permettant de lister et tester vos poin
 
 ## 4 - Outils de réalisation :
 
-Code réalisé avec l'iDE Intellij
-Projet réalisé en Java
-Framework utilisé : Spring Boot
+Langage de programmation : Java 17
+Framework : Spring Boot 3.0.5
+Gestionnaire de dépendances : Apache Maven
+Base de données : MySQL, avec le pilote JDBC "mysql-connector-j"
+Outil pour la documentation de l'API : Springdoc-OpenAPI.
 
 
 ### Bibliothèques utilisées :
@@ -46,6 +48,7 @@ Framework utilisé : Spring Boot
 - Spring Web
 - Mysql driver
 - Spring Date JPA
+- Spring Validation
 
 
 ## 5 - Installation du projet :
