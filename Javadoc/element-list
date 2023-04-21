@@ -1,0 +1,4 @@
+fr.simplon.oxosondages_service
+fr.simplon.oxosondages_service.controller
+fr.simplon.oxosondages_service.dao.impl
+fr.simplon.oxosondages_service.entity
