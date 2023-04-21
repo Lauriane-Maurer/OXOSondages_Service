@@ -89,6 +89,7 @@ public class SondageController {
                     sondage.setQuestion(newSurvey.getQuestion());
                     sondage.setDateCreation(newSurvey.getDateCreation());
                     sondage.setDateCloture(newSurvey.getDateCloture());
+                    sondage.setCreateur(newSurvey.getCreateur());
                     return repo.save(sondage);
                 })
                 .orElseGet(() -> {
